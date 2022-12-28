@@ -6,8 +6,7 @@
 //
 
 import UIKit
-import Photos
-import PhotosUI
+import FirebaseAuth
 
 class RegisterViewController: UIViewController {
     
@@ -109,7 +108,7 @@ class RegisterViewController: UIViewController {
         emailField.delegate = self
         passwordField.delegate = self
         
-        registerButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
+        registerButton.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
         
         // add subviews
         view.addSubview(scrollView)
@@ -147,7 +146,7 @@ class RegisterViewController: UIViewController {
         presentPhotoActionSheet()
     }
     
-    @objc private func loginTapped() {
+    @objc private func registerTapped() {
         
         firstNameField.resignFirstResponder()
         lastNameField.resignFirstResponder()
@@ -165,6 +164,21 @@ class RegisterViewController: UIViewController {
         }
         
         // firebase register
+        
+        FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+            guard let result = authResult, error == nil else {
+                print("error creating new user")
+                return
+            }
+//            
+//            guard let result = authResult else {
+//                print("auth bad")
+//                return
+//            }
+//            
+            let user = result.user
+            print("we created a new user" , user)
+        }
     }
     
     private func alertLoginError() {
@@ -177,11 +191,15 @@ class RegisterViewController: UIViewController {
 extension RegisterViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == emailField {
-            passwordField.becomeFirstResponder()
-        } else if textField == passwordField {
-            loginTapped()
+        
+        switch textField {
+        case firstNameField : lastNameField.becomeFirstResponder()
+        case lastNameField : emailField.becomeFirstResponder()
+        case emailField: passwordField.becomeFirstResponder()
+        case passwordField: registerTapped()
+        default : break
         }
+
         return true
     }
 }
