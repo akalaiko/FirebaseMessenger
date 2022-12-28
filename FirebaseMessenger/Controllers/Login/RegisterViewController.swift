@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import Photos
+import PhotosUI
 
 class RegisterViewController: UIViewController {
     
@@ -21,6 +23,9 @@ class RegisterViewController: UIViewController {
         imageView.tintColor = .gray
         imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = true
+        imageView.layer.masksToBounds = true
+        imageView.layer.borderColor = UIColor.lightGray.cgColor
+        imageView.layer.borderWidth = 1
         return imageView
     }()
     
@@ -99,7 +104,7 @@ class RegisterViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        title = "Log In"
+        title = "Register"
         
         emailField.delegate = self
         passwordField.delegate = self
@@ -123,7 +128,8 @@ class RegisterViewController: UIViewController {
         super.viewDidLayoutSubviews()
         scrollView.frame = view.bounds
         let size = scrollView.width / 3
-        imageView.frame = CGRect(x: size, y: 120, width: size, height: size)
+        imageView.frame = CGRect(x: size, y: 80, width: size, height: size)
+        imageView.layer.cornerRadius = imageView.width / 2
         firstNameField.frame = CGRect(x: 40, y: imageView.bottom + 40, width: scrollView.width - 80, height: 52)
         lastNameField.frame = CGRect(x: 40, y: firstNameField.bottom + 10, width: scrollView.width - 80, height: 52)
         emailField.frame = CGRect(x: 40, y: lastNameField.bottom + 10, width: scrollView.width - 80, height: 52)
@@ -138,7 +144,7 @@ class RegisterViewController: UIViewController {
     }
     
     @objc func didTapChangeProfilePic() {
-        print("boom")
+        presentPhotoActionSheet()
     }
     
     @objc private func loginTapped() {
@@ -158,7 +164,7 @@ class RegisterViewController: UIViewController {
             return
         }
         
-        // firebase login
+        // firebase register
     }
     
     private func alertLoginError() {
@@ -177,5 +183,44 @@ extension RegisterViewController: UITextFieldDelegate {
             loginTapped()
         }
         return true
+    }
+}
+
+extension RegisterViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true)
+        guard let image = info[.editedImage] as? UIImage else { return }
+        
+        self.imageView.image = image
+    }
+    
+    func presentPhotoActionSheet() {
+        let ac = UIAlertController(title: "Profile picture", message: "How would you like to select a picture?", preferredStyle: .actionSheet)
+        
+        ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        ac.addAction(UIAlertAction(title: "Take Photo", style: .default) { [weak self] _ in self?.presentCamera() })
+        ac.addAction(UIAlertAction(title: "Choose Photo", style: .default) { [weak self] _ in self?.presentPhotoPicker() })
+        
+        present(ac, animated: true)
+    }
+    
+    func presentCamera() {
+        let vc = UIImagePickerController()
+        vc.sourceType = .camera
+        vc.delegate = self
+        vc.allowsEditing = true
+        present(vc, animated: true)
+    }
+    
+    func presentPhotoPicker() {
+        let vc = UIImagePickerController()
+        vc.sourceType = .photoLibrary
+        vc.delegate = self
+        vc.allowsEditing = true
+        present(vc, animated: true)
     }
 }
