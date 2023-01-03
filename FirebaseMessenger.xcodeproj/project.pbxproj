@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AF7AAF4529645CC2001DF0CD /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF7AAF4429645CC2001DF0CD /* DatabaseManager.swift */; };
+		AF7AAF4929646409001DF0CD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AF7AAF4829646409001DF0CD /* GoogleService-Info.plist */; };
 		AFB9027B295C2EE7008DADC6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB9027A295C2EE7008DADC6 /* AppDelegate.swift */; };
 		AFB9027D295C2EE7008DADC6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB9027C295C2EE7008DADC6 /* SceneDelegate.swift */; };
 		AFB9027F295C2EE7008DADC6 /* ConversationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB9027E295C2EE7008DADC6 /* ConversationsViewController.swift */; };
@@ -24,10 +26,11 @@
 		AFB902A8295C711E008DADC6 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = AFB902A7295C711E008DADC6 /* FirebaseDatabase */; };
 		AFB902AA295C711E008DADC6 /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = AFB902A9295C711E008DADC6 /* FirebaseDatabaseSwift */; };
 		AFB902B2295C711E008DADC6 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = AFB902B1295C711E008DADC6 /* FirebaseStorage */; };
-		AFB902B4295C7323008DADC6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AFB902B3295C7323008DADC6 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AF7AAF4429645CC2001DF0CD /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		AF7AAF4829646409001DF0CD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AFB90277295C2EE7008DADC6 /* FirebaseMessenger.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirebaseMessenger.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFB9027A295C2EE7008DADC6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AFB9027C295C2EE7008DADC6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -42,7 +45,6 @@
 		AFB9029B295C30B0008DADC6 /* NewConversationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationViewController.swift; sourceTree = "<group>"; };
 		AFB9029D295C30BA008DADC6 /* ProfileViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewViewController.swift; sourceTree = "<group>"; };
 		AFB902A0295C3B51008DADC6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		AFB902B3295C7323008DADC6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AFB902B5295C77C5008DADC6 /* FirebaseMessenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FirebaseMessenger.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -88,7 +90,7 @@
 				AFB90291295C2F9F008DADC6 /* Controllers */,
 				AFB90292295C2FB2008DADC6 /* Resources */,
 				AFB90288295C2EE8008DADC6 /* Info.plist */,
-				AFB902B3295C7323008DADC6 /* GoogleService-Info.plist */,
+				AF7AAF4829646409001DF0CD /* GoogleService-Info.plist */,
 			);
 			path = FirebaseMessenger;
 			sourceTree = "<group>";
@@ -135,6 +137,7 @@
 				AFB9027A295C2EE7008DADC6 /* AppDelegate.swift */,
 				AFB9027C295C2EE7008DADC6 /* SceneDelegate.swift */,
 				AFB902A0295C3B51008DADC6 /* Extensions.swift */,
+				AF7AAF4429645CC2001DF0CD /* DatabaseManager.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -218,7 +221,7 @@
 			files = (
 				AFB90287295C2EE8008DADC6 /* LaunchScreen.storyboard in Resources */,
 				AFB90284295C2EE8008DADC6 /* Assets.xcassets in Resources */,
-				AFB902B4295C7323008DADC6 /* GoogleService-Info.plist in Resources */,
+				AF7AAF4929646409001DF0CD /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,6 +233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AFB90294295C3069008DADC6 /* LoginViewController.swift in Sources */,
+				AF7AAF4529645CC2001DF0CD /* DatabaseManager.swift in Sources */,
 				AFB90296295C3074008DADC6 /* RegisterViewController.swift in Sources */,
 				AFB9029C295C30B0008DADC6 /* NewConversationViewController.swift in Sources */,
 				AFB9027F295C2EE7008DADC6 /* ConversationsViewController.swift in Sources */,
@@ -384,10 +388,11 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FirebaseMessenger/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a profile picture";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access toselect photo for your profile";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -401,7 +406,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -417,10 +422,11 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FirebaseMessenger/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a profile picture";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access toselect photo for your profile";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -434,7 +440,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};

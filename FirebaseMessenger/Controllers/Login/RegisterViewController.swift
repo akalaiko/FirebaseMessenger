@@ -18,7 +18,7 @@ class RegisterViewController: UIViewController {
     
     private var imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "person")
+        imageView.image = UIImage(systemName: "person.circle")
         imageView.tintColor = .gray
         imageView.contentMode = .scaleAspectFit
         imageView.isUserInteractionEnabled = true
@@ -136,12 +136,6 @@ class RegisterViewController: UIViewController {
         registerButton.frame = CGRect(x: 40, y: passwordField.bottom + 40, width: scrollView.width - 80, height: 52)
     }
     
-    @objc private func registedTapped() {
-        let vc = RegisterViewController()
-        vc.title = "Register"
-        navigationController?.pushViewController(vc, animated: true)
-    }
-    
     @objc func didTapChangeProfilePic() {
         presentPhotoActionSheet()
     }
@@ -159,30 +153,36 @@ class RegisterViewController: UIViewController {
               let password = passwordField.text,
               !email.isEmpty, !password.isEmpty, !firstName.isEmpty, !lastName.isEmpty, password.count >= 6
         else {
-            alertLoginError()
+            alertLoginError(with: "Please enter all info to create a new account.")
             return
         }
         
         // firebase register
         
-        FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
-            guard let result = authResult, error == nil else {
-                print("error creating new user")
+        DatabaseManager.shared.userExists(with: email, completion: { [weak self] exists in
+            guard let strongSelf = self else { return }
+            guard !exists else {
+                strongSelf.alertLoginError(with: "User already exists!")
                 return
             }
-//            
-//            guard let result = authResult else {
-//                print("auth bad")
-//                return
-//            }
-//            
-            let user = result.user
-            print("we created a new user" , user)
-        }
+            
+            FirebaseAuth.Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+                guard authResult != nil, error == nil else {
+                    print("error creating new user")
+                    return
+                }
+
+                DatabaseManager.shared.insertUser(with: ChatAppUser(firstName: firstName,
+                                                                    lastName: lastName,
+                                                                    emailAddress: email))
+                
+                strongSelf.navigationController?.popToRootViewController(animated: true)
+            }
+        })
     }
     
-    private func alertLoginError() {
-        let alert = UIAlertController(title: "Ooops!", message: "Please enter all info to create a new account.", preferredStyle: .alert)
+    private func alertLoginError(with message: String = "Please enter all info to create a new account.") {
+        let alert = UIAlertController(title: "Ooops!", message: message, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .cancel))
         present(alert, animated: true)
     }

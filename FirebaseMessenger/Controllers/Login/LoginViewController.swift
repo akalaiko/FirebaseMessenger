@@ -72,8 +72,7 @@ class LoginViewController: UIViewController {
         
         emailField.delegate = self
         passwordField.delegate = self
-        
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Register", style: .plain, target: self, action: #selector(registedTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Register", style: .plain, target: self, action: #selector(registerTapped))
         navigationItem.hidesBackButton = true
         
         loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
@@ -96,7 +95,7 @@ class LoginViewController: UIViewController {
         loginButton.frame = CGRect(x: 40, y: passwordField.bottom + 40, width: scrollView.width - 80, height: 52)
     }
 
-    @objc private func registedTapped() {
+    @objc private func registerTapped() {
         let vc = RegisterViewController()
         vc.title = "Register"
         navigationController?.pushViewController(vc, animated: true)
@@ -116,13 +115,15 @@ class LoginViewController: UIViewController {
         }
         
         // firebase login
-        FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
+        FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
+            guard let self else { return }
             guard let result = authResult, error == nil else {
                 print("failed to login in user with email: \(email)")
                 return
             }
             let user = result.user
             print("great success", user)
+            self.navigationController?.popViewController(animated: true)
         }
     }
     
