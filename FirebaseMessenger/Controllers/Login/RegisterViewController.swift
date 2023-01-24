@@ -160,9 +160,9 @@ class RegisterViewController: UIViewController {
         // firebase register
         
         DatabaseManager.shared.userExists(with: email, completion: { [weak self] exists in
-            guard let strongSelf = self else { return }
+            guard let self else { return }
             guard !exists else {
-                strongSelf.alertLoginError(with: "User already exists!")
+                self.alertLoginError(with: "User already exists!")
                 return
             }
             print("somehow we are here")
@@ -177,7 +177,7 @@ class RegisterViewController: UIViewController {
                                                                     lastName: lastName,
                                                                     emailAddress: email))
                 
-                strongSelf.navigationController?.popToRootViewController(animated: true)
+                self.navigationController?.popToRootViewController(animated: true)
             }
         })
     }

@@ -16,7 +16,8 @@ class ConversationsViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        view.backgroundColor = .red
+        tabBarController?.tabBar.isHidden = false
+//        view.backgroundColor = .red
         validateAuth()
 
     }

@@ -55,3 +55,4 @@ struct ChatAppUser {
     }
     // let profilePicture: String
 }
+
