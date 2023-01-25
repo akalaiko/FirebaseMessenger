@@ -111,7 +111,7 @@ class RegisterViewController: UIViewController {
         emailField.delegate = self
         passwordField.delegate = self
         
-        registerButton.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
+        registerButton.addTarget(self, action: #selector(registerButtonTapped), for: .touchUpInside)
         
         // add subviews
         view.addSubview(scrollView)
@@ -143,7 +143,7 @@ class RegisterViewController: UIViewController {
         presentPhotoActionSheet()
     }
     
-    @objc private func registerTapped() {
+    @objc private func registerButtonTapped() {
         
         firstNameField.resignFirstResponder()
         lastNameField.resignFirstResponder()
@@ -182,10 +182,28 @@ class RegisterViewController: UIViewController {
                     print("error creating new user")
                     return
                 }
-
-                DatabaseManager.shared.insertUser(with: ChatAppUser(firstName: firstName,
-                                                                    lastName: lastName,
-                                                                    emailAddress: email))
+                let chatUser = ChatAppUser(firstName: firstName,
+                                           lastName: lastName,
+                                           emailAddress: email)
+                DatabaseManager.shared.insertUser(with: chatUser, completion: { success in
+                    if success {
+                        guard let image = self.imageView.image,
+                              let data = image.pngData()
+                        else {
+                            return
+                        }
+                        let fileName = chatUser.profilePictureFileName
+                        StorageManager.shared.uploadProfilePicture(with: data,fileName: fileName, completion: { result in
+                            switch result {
+                            case .success(let downloadURL):
+                                UserDefaults.standard.set(downloadURL, forKey: "profile_picture_url")
+                                print(downloadURL)
+                            case .failure(let error):
+                                print(error)
+                            }
+                        })
+                    }
+                })
                 
                 self.navigationController?.popToRootViewController(animated: true)
             }
@@ -207,10 +225,10 @@ extension RegisterViewController: UITextFieldDelegate {
         case firstNameField : lastNameField.becomeFirstResponder()
         case lastNameField : emailField.becomeFirstResponder()
         case emailField: passwordField.becomeFirstResponder()
-        case passwordField: registerTapped()
+        case passwordField: registerButtonTapped()
         default : break
         }
-
+        
         return true
     }
 }
@@ -219,7 +237,7 @@ extension RegisterViewController: UIImagePickerControllerDelegate, UINavigationC
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         picker.dismiss(animated: true)
     }
-
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)
         guard let image = info[.editedImage] as? UIImage else { return }
