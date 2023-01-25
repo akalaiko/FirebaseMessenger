@@ -7,8 +7,11 @@
 
 import UIKit
 import FirebaseAuth
+import JGProgressHUD
 
 class RegisterViewController: UIViewController {
+    
+    private let spinner = JGProgressHUD(style: .dark)
     
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -157,10 +160,17 @@ class RegisterViewController: UIViewController {
             return
         }
         
+        spinner.show(in: view, animated: true)
+        
         // firebase register
         
         DatabaseManager.shared.userExists(with: email, completion: { [weak self] exists in
             guard let self else { return }
+            
+            DispatchQueue.main.async {
+                self.spinner.dismiss(animated: true)
+            }
+            
             guard !exists else {
                 self.alertLoginError(with: "User already exists!")
                 return
@@ -218,26 +228,20 @@ extension RegisterViewController: UIImagePickerControllerDelegate, UINavigationC
     }
     
     func presentPhotoActionSheet() {
-        let ac = UIAlertController(title: "Profile picture", message: "How would you like to select a picture?", preferredStyle: .actionSheet)
+        let ac = UIAlertController(title: "Profile picture",
+                                   message: "How would you like to select a picture?",
+                                   preferredStyle: .actionSheet)
         
         ac.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        ac.addAction(UIAlertAction(title: "Take Photo", style: .default) { [weak self] _ in self?.presentCamera() })
-        ac.addAction(UIAlertAction(title: "Choose Photo", style: .default) { [weak self] _ in self?.presentPhotoPicker() })
+        ac.addAction(UIAlertAction(title: "Take Photo", style: .default) { [weak self] _ in self?.pickImage(from: .camera) })
+        ac.addAction(UIAlertAction(title: "Choose Photo", style: .default) { [weak self] _ in self?.pickImage(from: .photoLibrary) })
         
         present(ac, animated: true)
     }
     
-    func presentCamera() {
+    func pickImage(from source: UIImagePickerController.SourceType) {
         let vc = UIImagePickerController()
-        vc.sourceType = .camera
-        vc.delegate = self
-        vc.allowsEditing = true
-        present(vc, animated: true)
-    }
-    
-    func presentPhotoPicker() {
-        let vc = UIImagePickerController()
-        vc.sourceType = .photoLibrary
+        vc.sourceType = source
         vc.delegate = self
         vc.allowsEditing = true
         present(vc, animated: true)

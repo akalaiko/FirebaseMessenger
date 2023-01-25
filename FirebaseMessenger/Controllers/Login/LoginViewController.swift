@@ -8,8 +8,11 @@
 import UIKit
 import FirebaseAuth
 import FacebookLogin
+import JGProgressHUD
 
 class LoginViewController: UIViewController {
+    
+    private let spinner = JGProgressHUD(style: .dark)
     
     private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -76,10 +79,10 @@ class LoginViewController: UIViewController {
         button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
         return button
     }()
-
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         view.backgroundColor = .white
         title = "Log In"
         navigationItem.largeTitleDisplayMode = .never
@@ -100,7 +103,7 @@ class LoginViewController: UIViewController {
         scrollView.addSubview(passwordField)
         scrollView.addSubview(loginButton)
         scrollView.addSubview(facebookLoginButton)
-
+        
         
     }
     
@@ -114,10 +117,9 @@ class LoginViewController: UIViewController {
         loginButton.frame = CGRect(x: 40, y: passwordField.bottom + 40, width: scrollView.width - 80, height: 52)
         facebookLoginButton.frame = CGRect(x: 40, y: loginButton.bottom + 10, width: scrollView.width - 80, height: 52)
     }
-
+    
     @objc private func registerTapped() {
         let vc = RegisterViewController()
-        vc.title = "Register"
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -134,19 +136,26 @@ class LoginViewController: UIViewController {
             return
         }
         
+        spinner.show(in: view, animated: true)
+        
         // firebase login
         FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
             guard let self else { return }
+            
+            DispatchQueue.main.async {
+                self.spinner.dismiss(animated: true)
+            }
+            
             guard let result = authResult, error == nil else {
                 print("failed to login in user with email: \(email)")
                 return
             }
             let user = result.user
             print("great success", user)
-            self.navigationController?.popViewController(animated: true)
+            self.navigationController?.popToRootViewController(animated: true)
         }
     }
-   
+    
     private func alertLoginError(message: String = "Please enter all info to log in.") {
         let alert = UIAlertController(title: "Ooops!",
                                       message: message,
@@ -179,7 +188,10 @@ extension LoginViewController: LoginButtonDelegate {
             return
         }
         
-        let facebookRequest = FBSDKLoginKit.GraphRequest(graphPath: "me", parameters: ["fields": "email, first_name, last_name"], tokenString: token, version: nil, httpMethod: .get)
+        let facebookRequest = FBSDKLoginKit.GraphRequest(graphPath: "me",
+                                                         parameters: ["fields": "email, first_name, last_name"],
+                                                         tokenString: token, version: nil,
+                                                         httpMethod: .get)
         
         facebookRequest.start() { _, result, error in
             guard let result = result as? [String: Any], error == nil else {
@@ -202,20 +214,16 @@ extension LoginViewController: LoginButtonDelegate {
             })
             
             let credential = FacebookAuthProvider.credential(withAccessToken: token)
+            
             FirebaseAuth.Auth.auth().signIn(with: credential) { [weak self] authResult, error in
-                guard let self else { return }
-                guard let result = authResult, error == nil else {
-    //                print("failed to login in user with email: \(credential.)")
-                    return
-                }
+                guard let self, let result = authResult, error == nil else { return }
+                
                 let user = result.user
                 print("great success", user)
-                self.navigationController?.popViewController(animated: true)
+                self.navigationController?.popToRootViewController(animated: true)
             }
         }
     }
-    
-    
 }
 
 
