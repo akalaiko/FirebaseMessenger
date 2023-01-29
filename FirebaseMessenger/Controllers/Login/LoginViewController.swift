@@ -151,6 +151,8 @@ class LoginViewController: UIViewController {
                 return
             }
             let user = result.user
+            
+            UserDefaults.standard.set(email, forKey: "email")
             print("great success", user)
             self.navigationController?.popToRootViewController(animated: true)
         }
@@ -249,6 +251,9 @@ extension LoginViewController: LoginButtonDelegate {
                 guard let self, let result = authResult, error == nil else { return }
                 
                 let user = result.user
+                
+                UserDefaults.standard.set(email, forKey: "email")
+                
                 print("great success", user)
                 self.navigationController?.popToRootViewController(animated: true)
             }
