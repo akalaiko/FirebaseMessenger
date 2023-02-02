@@ -140,10 +140,10 @@ class LoginViewController: UIViewController {
         
         // firebase login
         FirebaseAuth.Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
-            guard let self else { return }
+//            guard let self else { return }
             
             DispatchQueue.main.async {
-                self.spinner.dismiss(animated: true)
+                self?.spinner.dismiss(animated: true)
             }
             
             guard let result = authResult, error == nil else {
@@ -151,10 +151,27 @@ class LoginViewController: UIViewController {
                 return
             }
             let user = result.user
+            let safeEmail = DatabaseManager.safeEmail(email: email)
+            
+            DatabaseManager.shared.getDataFor(path: safeEmail, completion: { result in
+                switch result {
+                case .success(let data):
+                    guard let userData = data as? [String: Any],
+                          let firstName = userData["first_name"] as? String,
+                          let lastName = userData["last_name"] as? String
+                    else {
+                        return
+                    }
+                    UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
+                    
+                case .failure(let error):
+                    print("failed to read data with error:", error)
+                }
+            })
             
             UserDefaults.standard.set(email, forKey: "email")
             print("great success", user)
-            self.navigationController?.popToRootViewController(animated: true)
+            self?.navigationController?.popToRootViewController(animated: true)
         }
     }
     
@@ -211,11 +228,16 @@ extension LoginViewController: LoginButtonDelegate {
                 return
             }
             
+            UserDefaults.standard.set(email, forKey: "email")
+            
+            
             DatabaseManager.shared.userExists(with: email, completion: { exists in
                 guard !exists else { return }
                 let chatUser = ChatAppUser(firstName: firstName,
                                            lastName: lastName,
                                            emailAddress: email)
+                UserDefaults.standard.set(chatUser.fullName, forKey: "name")
+                
                 DatabaseManager.shared.insertUser(with: chatUser, completion: { success in
                     if success {
                         guard let url = URL(string: pictureURL) else { return }
@@ -251,8 +273,6 @@ extension LoginViewController: LoginButtonDelegate {
                 guard let self, let result = authResult, error == nil else { return }
                 
                 let user = result.user
-                
-                UserDefaults.standard.set(email, forKey: "email")
                 
                 print("great success", user)
                 self.navigationController?.popToRootViewController(animated: true)

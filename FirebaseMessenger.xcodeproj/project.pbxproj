@@ -35,6 +35,7 @@
 		AFC6E87729800849004F38E4 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = AFC6E87629800849004F38E4 /* SDWebImage */; };
 		AFC6E87929800B46004F38E4 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC6E87829800B46004F38E4 /* ChatViewController.swift */; };
 		AFC6E8A429815091004F38E4 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC6E8A329815091004F38E4 /* StorageManager.swift */; };
+		AFD99FD1298936DC00F083E2 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD99FD0298936DC00F083E2 /* ConversationTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,7 @@
 		AFB902B5295C77C5008DADC6 /* FirebaseMessenger.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FirebaseMessenger.entitlements; sourceTree = "<group>"; };
 		AFC6E87829800B46004F38E4 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		AFC6E8A329815091004F38E4 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
+		AFD99FD0298936DC00F083E2 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 			children = (
 				AFB90283295C2EE8008DADC6 /* Assets.xcassets */,
 				AFB90285295C2EE8008DADC6 /* LaunchScreen.storyboard */,
+				AFD99FD0298936DC00F083E2 /* ConversationTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -278,6 +281,7 @@
 				AFB9029E295C30BA008DADC6 /* ProfileViewViewController.swift in Sources */,
 				AFB9027D295C2EE7008DADC6 /* SceneDelegate.swift in Sources */,
 				AFB90298295C3089008DADC6 /* PhotoViewerViewController.swift in Sources */,
+				AFD99FD1298936DC00F083E2 /* ConversationTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
