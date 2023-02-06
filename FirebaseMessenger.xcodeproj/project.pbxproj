@@ -36,6 +36,7 @@
 		AFC6E87929800B46004F38E4 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC6E87829800B46004F38E4 /* ChatViewController.swift */; };
 		AFC6E8A429815091004F38E4 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC6E8A329815091004F38E4 /* StorageManager.swift */; };
 		AFD99FD1298936DC00F083E2 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD99FD0298936DC00F083E2 /* ConversationTableViewCell.swift */; };
+		AFD99FD3298C01C400F083E2 /* NewConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD99FD2298C01C400F083E2 /* NewConversationCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		AFC6E87829800B46004F38E4 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		AFC6E8A329815091004F38E4 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		AFD99FD0298936DC00F083E2 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
+		AFD99FD2298C01C400F083E2 /* NewConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -129,6 +131,7 @@
 				AFB90283295C2EE8008DADC6 /* Assets.xcassets */,
 				AFB90285295C2EE8008DADC6 /* LaunchScreen.storyboard */,
 				AFD99FD0298936DC00F083E2 /* ConversationTableViewCell.swift */,
+				AFD99FD2298C01C400F083E2 /* NewConversationCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -276,6 +279,7 @@
 				AFB9027F295C2EE7008DADC6 /* ConversationsViewController.swift in Sources */,
 				AFB9029A295C3095008DADC6 /* VideoPlayerViewController.swift in Sources */,
 				AFB902A1295C3B51008DADC6 /* Extensions.swift in Sources */,
+				AFD99FD3298C01C400F083E2 /* NewConversationCell.swift in Sources */,
 				AFB9027B295C2EE7008DADC6 /* AppDelegate.swift in Sources */,
 				AFC6E87929800B46004F38E4 /* ChatViewController.swift in Sources */,
 				AFB9029E295C30BA008DADC6 /* ProfileViewViewController.swift in Sources */,
@@ -433,8 +437,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FirebaseMessenger/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a profile picture";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access toselect photo for your profile";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a picture";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Please allow access to microphone to send audio and video messages";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access to select photo";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
@@ -472,8 +477,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FirebaseMessenger/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
-				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a profile picture";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access toselect photo for your profile";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a picture";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Please allow access to microphone to send audio and video messages";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access to select photo";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";

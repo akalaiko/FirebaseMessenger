@@ -100,8 +100,9 @@ class ConversationsViewController: UIViewController {
         navigationController?.present(nav, animated: true)
     }
     
-    private func createNewConversation(with user: [String: String]) {
-        guard let name = user["name"], let email = user["email"] else { return }
+    private func createNewConversation(with user: SearchResult) {
+        let name = user.name
+        let email = user.email
         
         let vc = ChatViewController(with: email, id: nil)
         vc.isNewConversation = true

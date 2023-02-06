@@ -287,6 +287,12 @@ extension DatabaseManager {
                     
                     let media = Media(url: url, placeholderImage: placeholder, size: CGSize(width: 200, height: 200))
                     kindInput = .photo(media)
+                case "video":
+                    guard let url = URL(string: content),
+                          let placeholder = UIImage(systemName: "video") else { return nil }
+                    
+                    let media = Media(url: url, placeholderImage: placeholder, size: CGSize(width: 200, height: 200))
+                    kindInput = .video(media)
                 case "text":
                     kindInput = .text(content)
                 default:
@@ -319,7 +325,10 @@ extension DatabaseManager {
                 content = targetUrlString
             }
             break
-        case .video(_):
+        case .video(let mediaItem):
+            if let targetUrlString = mediaItem.url?.absoluteString {
+                content = targetUrlString
+            }
             break
         case .location(_):
             break
