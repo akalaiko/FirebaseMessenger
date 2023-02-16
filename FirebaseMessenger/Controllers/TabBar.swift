@@ -17,8 +17,8 @@ class TabBar: UITabBarController {
     
     func setupVCs() {
         viewControllers = [
-            createNavController(for: ConversationsViewController(), title: "Chats", image: "clock.fill"),
-            createNavController(for: ProfileViewViewController(), title: "Profile", image: "arrow.up.heart.fill")
+            createNavController(for: ConversationsViewController(), title: "Chats", image: "message"),
+            createNavController(for: ProfileViewViewController(), title: "Profile", image: "person.circle")
         ]
     }
     

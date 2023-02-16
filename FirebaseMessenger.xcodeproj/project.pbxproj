@@ -107,7 +107,6 @@
 			children = (
 				AFB902B5295C77C5008DADC6 /* FirebaseMessenger.entitlements */,
 				AFB9028E295C2F73008DADC6 /* Models */,
-				AFB902A0295C3B51008DADC6 /* Extensions.swift */,
 				AFB9028F295C2F81008DADC6 /* Views */,
 				AFB90290295C2F8F008DADC6 /* ViewModels */,
 				AFB90291295C2F9F008DADC6 /* Controllers */,
@@ -163,6 +162,7 @@
 			children = (
 				AFB9027A295C2EE7008DADC6 /* AppDelegate.swift */,
 				AFB9027C295C2EE7008DADC6 /* SceneDelegate.swift */,
+				AFB902A0295C3B51008DADC6 /* Extensions.swift */,
 				AF7AAF4429645CC2001DF0CD /* DatabaseManager.swift */,
 				AFC6E8A329815091004F38E4 /* StorageManager.swift */,
 			);

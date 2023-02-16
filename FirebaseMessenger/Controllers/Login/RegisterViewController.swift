@@ -204,7 +204,7 @@ class RegisterViewController: UIViewController {
                         })
                     }
                 })
-                
+                NotificationCenter.default.post(Notification(name: .didLogInNotification))
                 self.navigationController?.popToRootViewController(animated: true)
             }
         })

@@ -171,6 +171,7 @@ class LoginViewController: UIViewController {
             
             UserDefaults.standard.set(email, forKey: "email")
             print("great success", user)
+            NotificationCenter.default.post(Notification(name: .didLogInNotification))
             self?.navigationController?.popToRootViewController(animated: true)
         }
     }
@@ -229,10 +230,12 @@ extension LoginViewController: LoginButtonDelegate {
             }
             
             UserDefaults.standard.set(email, forKey: "email")
+            UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
             
             
             DatabaseManager.shared.userExists(with: email, completion: { exists in
                 guard !exists else { return }
+                print("user exists, but we are still here ")
                 let chatUser = ChatAppUser(firstName: firstName,
                                            lastName: lastName,
                                            emailAddress: email)
@@ -275,10 +278,10 @@ extension LoginViewController: LoginButtonDelegate {
                 let user = result.user
                 
                 print("great success", user)
+                NotificationCenter.default.post(Notification(name: .didLogInNotification))
                 self.navigationController?.popToRootViewController(animated: true)
             }
         }
     }
 }
-
 
