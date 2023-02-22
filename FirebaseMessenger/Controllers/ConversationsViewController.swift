@@ -16,6 +16,12 @@ struct Conversation {
     let latestMessage: LatestMessage
 }
 
+extension Conversation: Equatable {
+    static func == (lhs: Conversation, rhs: Conversation) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 struct LatestMessage {
     let date: String
     let text: String
@@ -26,43 +32,59 @@ class ConversationsViewController: UIViewController {
     
     private let spinner = JGProgressHUD(style: .dark)
     
-    private var conversations = [Conversation]()
+    private var conversations = [Conversation]() {
+        didSet {
+            noConversationsLabel.isHidden = !conversations.isEmpty
+            tableView.isHidden = conversations.isEmpty
+        }
+    }
     
     private let tableView: UITableView = {
         let table = UITableView()
         table.register(ConversationTableViewCell.self, forCellReuseIdentifier: ConversationTableViewCell.identifier)
         table.isHidden = true
+        table.backgroundColor = .systemBackground
         return table
     }()
     
     private let noConversationsLabel: UILabel = {
         let label = UILabel()
-        label.text = "No conversations yet."
+        label.text = "No conversations yet"
         label.textAlignment = .center
         label.textColor = .gray
         label.font = .systemFont(ofSize: 21, weight: .medium)
-        label.isHidden = true
+        label.isHidden = false
         return label
     }()
     
     private var loginObserver: NSObjectProtocol?
     
+    override func loadView() {
+        super.loadView()
+        view.backgroundColor = .systemBackground
+        validateAuth()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.dataSource = self
+        tableView.delegate = self
         view.addSubview(tableView)
         view.addSubview(noConversationsLabel)
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .compose,
                                                             target: self,
                                                             action: #selector(didTapComposeButton))
-        
-        setupTableView()
-        fetchConversations()
         startListeningForConversations()
-        
         loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main, using: { [weak self] _ in
-            guard let self else { return }
-            self.startListeningForConversations()
+            self?.startListeningForConversations()
         })
+       
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.frame = view.bounds
+        noConversationsLabel.frame = CGRect(x: 10, y: (view.height-50)/2, width: view.width - 20, height: 50)
     }
     
     private func startListeningForConversations() {
@@ -74,15 +96,16 @@ class ConversationsViewController: UIViewController {
         
         let safeEmail = DatabaseManager.safeEmail(email: email)
         DatabaseManager.shared.getAllConversations(for: safeEmail, completion: { [weak self] result in
-            guard let self else { return }
             print("should get convos here", result)
             switch result {
-            case .success(let conversations):
-                guard !conversations.isEmpty else { return }
-                self.conversations = conversations
+            case .success(let fetchedConversations):
+                guard !fetchedConversations.isEmpty else { return }
+                if self?.conversations != fetchedConversations {
+                    self?.conversations = fetchedConversations
+                }
                 
                 DispatchQueue.main.async {
-                    self.tableView.reloadData()
+                    self?.tableView.reloadData()
                 }
             case .failure(let error):
                 print("listen", error)
@@ -90,15 +113,9 @@ class ConversationsViewController: UIViewController {
         })
     }
     
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-        tableView.frame = view.bounds
-    }
-    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = false
-        validateAuth()
     }
     
     @objc func didTapComposeButton() {
@@ -138,20 +155,10 @@ class ConversationsViewController: UIViewController {
     }
     
     private func validateAuth() {
-        print("CHECK")
         if FirebaseAuth.Auth.auth().currentUser == nil {
             let vc = LoginViewController()
             navigationController?.pushViewController(vc, animated: false)
         }
-    }
-    
-    private func setupTableView() {
-        tableView.dataSource = self
-        tableView.delegate = self
-    }
-    
-    private func fetchConversations() {
-        tableView.isHidden = false
     }
 }
 
@@ -196,14 +203,9 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
         if editingStyle == .delete {
             tableView.beginUpdates()
             let conversation = conversations[indexPath.row].id
-            
-            DatabaseManager.shared.deleteConversation(id: conversation, completion: { [weak self] success in
-                if success {
-                    self?.conversations.remove(at: indexPath.row)
-                    tableView.deleteRows(at: [indexPath], with: .left)
-                }
-            })
-            
+            conversations.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .left)
+            DatabaseManager.shared.deleteConversation(id: conversation, completion: {  _ in })
             tableView.endUpdates()
         }
     }

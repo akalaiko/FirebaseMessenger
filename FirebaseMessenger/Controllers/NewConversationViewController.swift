@@ -66,7 +66,7 @@ class NewConversationViewController: UIViewController {
     }
     
     @objc func dismissSelf() {
-        self.dismiss(animated: true)
+        dismiss(animated: true)
     }
     
 }
@@ -106,7 +106,7 @@ extension NewConversationViewController: UISearchBarDelegate {
         let safeEmail = DatabaseManager.safeEmail(email: currentUserEmail)
         spinner.dismiss(animated: true)
         
-        let results: [SearchResult] = users.filter({
+        let searchResults: [SearchResult] = users.filter({
             guard let email = $0["email"], email != safeEmail,
                   let name = $0["name"]?.lowercased() else { return false }
             return name.contains(term.lowercased())
@@ -116,7 +116,7 @@ extension NewConversationViewController: UISearchBarDelegate {
             return SearchResult(name: name, email: email)
         })
         
-        self.results = results
+        results = searchResults
         updateUI()
     }
     

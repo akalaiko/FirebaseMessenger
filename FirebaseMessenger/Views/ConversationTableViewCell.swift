@@ -58,8 +58,8 @@ class ConversationTableViewCell: UITableViewCell {
     }
     
     public func configure(with model: Conversation) {
-        self.userMessageLabel.text = model.latestMessage.text
-        self.userNameLabel.text = model.name
+        userMessageLabel.text = model.latestMessage.text
+        userNameLabel.text = model.name
         
         let path = DatabaseManager.getProfilePicturePath(email: model.otherUserEmail)
         StorageManager.shared.downloadURL(for: path, completion: { [weak self] result in

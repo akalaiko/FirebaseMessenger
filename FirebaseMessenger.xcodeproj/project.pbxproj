@@ -37,6 +37,7 @@
 		AFC6E8A429815091004F38E4 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC6E8A329815091004F38E4 /* StorageManager.swift */; };
 		AFD99FD1298936DC00F083E2 /* ConversationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD99FD0298936DC00F083E2 /* ConversationTableViewCell.swift */; };
 		AFD99FD3298C01C400F083E2 /* NewConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFD99FD2298C01C400F083E2 /* NewConversationCell.swift */; };
+		AFE5288129A0D27800F2D798 /* LocationPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE5288029A0D27800F2D798 /* LocationPickerViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -62,6 +63,7 @@
 		AFC6E8A329815091004F38E4 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		AFD99FD0298936DC00F083E2 /* ConversationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationTableViewCell.swift; sourceTree = "<group>"; };
 		AFD99FD2298C01C400F083E2 /* NewConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationCell.swift; sourceTree = "<group>"; };
+		AFE5288029A0D27800F2D798 /* LocationPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPickerViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,6 +155,7 @@
 				AFB9027E295C2EE7008DADC6 /* ConversationsViewController.swift */,
 				AF7AAFB0297941F5001DF0CD /* TabBar.swift */,
 				AFC6E87829800B46004F38E4 /* ChatViewController.swift */,
+				AFE5288029A0D27800F2D798 /* LocationPickerViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -188,6 +191,7 @@
 				AFB90273295C2EE7008DADC6 /* Sources */,
 				AFB90274295C2EE7008DADC6 /* Frameworks */,
 				AFB90275295C2EE7008DADC6 /* Resources */,
+				AF47802C29A60949004CB745 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -265,6 +269,28 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		AF47802C29A60949004CB745 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${TARGET_NAME}",
+				"$(SRCROOT)/$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		AFB90273295C2EE7008DADC6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -273,6 +299,7 @@
 				AFB90294295C3069008DADC6 /* LoginViewController.swift in Sources */,
 				AF7AAF4529645CC2001DF0CD /* DatabaseManager.swift in Sources */,
 				AFB90296295C3074008DADC6 /* RegisterViewController.swift in Sources */,
+				AFE5288129A0D27800F2D798 /* LocationPickerViewController.swift in Sources */,
 				AFC6E8A429815091004F38E4 /* StorageManager.swift in Sources */,
 				AF7AAFB1297941F5001DF0CD /* TabBar.swift in Sources */,
 				AFB9029C295C30B0008DADC6 /* NewConversationViewController.swift in Sources */,
@@ -337,7 +364,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
@@ -429,6 +456,7 @@
 				CODE_SIGN_ENTITLEMENTS = FirebaseMessenger/FirebaseMessenger.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = G46T4VKZ45;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -438,6 +466,7 @@
 				INFOPLIST_FILE = FirebaseMessenger/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a picture";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Please allow access to your location";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Please allow access to microphone to send audio and video messages";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access to select photo";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -478,6 +507,7 @@
 				INFOPLIST_FILE = FirebaseMessenger/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Please allow access to take a picture";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Please allow access to your location";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Please allow access to microphone to send audio and video messages";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Please allow access to select photo";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

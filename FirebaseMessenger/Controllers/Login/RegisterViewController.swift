@@ -165,14 +165,13 @@ class RegisterViewController: UIViewController {
         // firebase register
         
         DatabaseManager.shared.userExists(with: email, completion: { [weak self] exists in
-            guard let self else { return }
             
             DispatchQueue.main.async {
-                self.spinner.dismiss(animated: true)
+                self?.spinner.dismiss(animated: true)
             }
             
             guard !exists else {
-                self.alertLoginError(with: "User already exists!")
+                self?.alertLoginError(with: "User already exists!")
                 return
             }
             print("somehow we are here")
@@ -182,12 +181,16 @@ class RegisterViewController: UIViewController {
                     print("error creating new user")
                     return
                 }
+                
+                UserDefaults.standard.set(email, forKey: "email")
+                UserDefaults.standard.set("\(firstName) \(lastName)", forKey: "name")
+                
                 let chatUser = ChatAppUser(firstName: firstName,
                                            lastName: lastName,
                                            emailAddress: email)
                 DatabaseManager.shared.insertUser(with: chatUser, completion: { success in
                     if success {
-                        guard let image = self.imageView.image,
+                        guard let image = self?.imageView.image,
                               let data = image.pngData()
                         else {
                             return
@@ -205,7 +208,7 @@ class RegisterViewController: UIViewController {
                     }
                 })
                 NotificationCenter.default.post(Notification(name: .didLogInNotification))
-                self.navigationController?.popToRootViewController(animated: true)
+                self?.navigationController?.popToRootViewController(animated: true)
             }
         })
     }
@@ -241,8 +244,7 @@ extension RegisterViewController: UIImagePickerControllerDelegate, UINavigationC
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true)
         guard let image = info[.editedImage] as? UIImage else { return }
-        
-        self.imageView.image = image
+        imageView.image = image
     }
     
     func presentPhotoActionSheet() {

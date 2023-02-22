@@ -11,6 +11,7 @@ import InputBarAccessoryView
 import SDWebImage
 import AVFoundation
 import AVKit
+import CoreLocation
 
 struct Message: MessageType{
     var sender: SenderType
@@ -45,6 +46,7 @@ extension MessageKind {
         }
     }
 }
+
 struct Sender: SenderType {
     var senderId: String
     var displayName: String
@@ -58,6 +60,11 @@ struct Media: MediaItem {
     var size: CGSize
 }
 
+struct Location: LocationItem {
+    var location: CLLocation
+    var size: CGSize
+}
+
 class ChatViewController: MessagesViewController {
     
     public static let dateFormatter: DateFormatter = {
@@ -68,9 +75,13 @@ class ChatViewController: MessagesViewController {
         return formatter
     }()
     
+    private var currentUserPhoto: UIImage?
+    private var otherUserPhoto: UIImage?
+    
+    
     public var isNewConversation = false
     public let otherUserEmail: String
-    private let conversationId: String?
+    private var conversationId: String?
     
     private var messages = [Message]()
     
@@ -84,10 +95,10 @@ class ChatViewController: MessagesViewController {
                             photoURL: "")
         return sender
     }
-
+    
     init(with email: String, id: String?) {
-        self.otherUserEmail = email
-        self.conversationId = id
+        otherUserEmail = email
+        conversationId = id
         super.init(nibName: nil, bundle: nil)
         
         if let conversationId {
@@ -103,15 +114,13 @@ class ChatViewController: MessagesViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tabBarController?.tabBar.isHidden = true
-
+        
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
         messagesCollectionView.messageCellDelegate = self
         messageInputBar.delegate = self
         setupInputButton()
-
-//        self.messagesCollectionView.reloadData()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -141,6 +150,9 @@ class ChatViewController: MessagesViewController {
         })
         actionSheet.addAction(UIAlertAction(title: "Audio", style: .default){ [weak self] _ in
             
+        })
+        actionSheet.addAction(UIAlertAction(title: "Location", style: .default){ [weak self] _ in
+            self?.presentLocationPicker()
         })
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         
@@ -193,6 +205,39 @@ class ChatViewController: MessagesViewController {
         present(actionSheet, animated: true)
     }
     
+    private func presentLocationPicker() {
+        let vc = LocationPickerViewController()
+        vc.navigationItem.largeTitleDisplayMode = .never
+        vc.completion = { [weak self] selectedCoordinates in
+            let longtitude: Double = selectedCoordinates.longitude
+            let latitude: Double = selectedCoordinates.latitude
+            
+            print(longtitude, latitude)
+            
+            guard let messageId = self?.createMessageId(),
+                  let conversationId = self?.conversationId,
+                  let name = self?.title,
+                  let otherUserEmail = self?.otherUserEmail,
+                  let selfSender = self?.selfSender
+            else {
+                return
+            }
+            let locationItem = Location(location: CLLocation(latitude: latitude, longitude: longtitude), size: .zero)
+            let message = Message(sender: selfSender, messageId: messageId, sentDate: Date(), kind: .location(locationItem))
+            
+            DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: otherUserEmail, name: name, message: message) { success in
+                if success {
+                    print("sent")
+                } else {
+                    print("failed to send a message in existing convo")
+                }
+            }
+        }
+        let nav = UINavigationController(rootViewController: vc)
+        nav.modalPresentationStyle = .popover
+        present(nav, animated: true)
+    }
+    
     private func createMessageId() -> String? {
         // date, otherUserEmail, senderEmail
         guard let currentUserEmail else { return nil }
@@ -200,23 +245,21 @@ class ChatViewController: MessagesViewController {
         
         let dateString = Self.dateFormatter.string(from: Date())
         let newId = otherUserEmail + safeEmail + dateString
-
+        
         return newId
     }
     
     private func listenForMessages(id: String, shouldScrollToBottom: Bool) {
         DatabaseManager.shared.getAllMessagesForConversation(with: id, completion: { [weak self] result in
-            guard let self else { return }
-            
             switch result {
             case .success(let messages):
                 guard !messages.isEmpty else {
                     return }
-                self.messages = messages
+                self?.messages = messages
                 DispatchQueue.main.async {
-                    self.messagesCollectionView.reloadDataAndKeepOffset()
+                    self?.messagesCollectionView.reloadDataAndKeepOffset()
                     if shouldScrollToBottom {
-                        self.messagesCollectionView.scrollToLastItem()
+                        self?.messagesCollectionView.scrollToLastItem()
                     }
                 }
             case .failure(let error):
@@ -233,21 +276,26 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
               let messageId = createMessageId() else { return }
         print("are we even here?")
         let message = Message(sender: selfSender, messageId: messageId, sentDate: Date(), kind: .text(text))
-
+        
         if isNewConversation {
-            DatabaseManager.shared.createNewConversation(with: otherUserEmail, name: title ?? "User", firstMessage: message, completion: { success in
+            DatabaseManager.shared.createNewConversation(with: otherUserEmail, name: title ?? "User", firstMessage: message, completion: { [weak self] success in
                 if success {
                     print("sent")
-                    self.isNewConversation = false
+                    self?.isNewConversation = false
+                    let newConversationId = "conversation_\(message.messageId)"
+                    self?.conversationId = newConversationId
+                    self?.listenForMessages(id: newConversationId, shouldScrollToBottom: true)
+                    self?.messageInputBar.inputTextView.text = nil
                 } else {
                     print("failed to send a message")
                 }
             })
         } else {
             guard let conversationId else { return }
-            DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: otherUserEmail, name: title ?? "User", message: message, completion: { success in
+            DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: otherUserEmail, name: title ?? "User", message: message, completion: { [weak self] success in
                 if success {
                     print("sent")
+                    self?.messageInputBar.inputTextView.text = nil
                 } else {
                     print("failed to send a message in existing convo")
                 }
@@ -279,6 +327,7 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
         default: break
         }
     }
+    
     func didTapImage(in cell: MessageCollectionViewCell) {
         guard let indexPath = messagesCollectionView.indexPath(for: cell) else { return }
         let message = messages[indexPath.section]
@@ -297,6 +346,68 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
             present(vc, animated: true)
         default: break
         }
+    }
+    
+    func didTapMessage(in cell: MessageCollectionViewCell) {
+        guard let indexPath = messagesCollectionView.indexPath(for: cell) else { return }
+        let message = messages[indexPath.section]
+        switch message.kind {
+        case .location(let locationData):
+            let coordinates = locationData.location.coordinate
+            let vc = LocationPickerViewController(coordinates: coordinates)
+            
+            let nav = UINavigationController(rootViewController: vc)
+            nav.modalPresentationStyle = .popover
+            present(nav, animated: true)
+        default: break
+        }
+    }
+    
+    func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+        let sender = message.sender
+        if sender.senderId == selfSender?.senderId {
+            return .link
+        }
+        return .secondarySystemBackground
+    }
+    
+    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        let sender = message.sender
+        
+        if sender.senderId == selfSender?.senderId {
+            if let currentUserPhoto {
+                avatarView.image = currentUserPhoto
+            } else {
+                setAvatar(for: currentUserEmail, to: avatarView) { [weak self] in self?.currentUserPhoto = avatarView.image }
+            }
+        } else {
+            if let otherUserPhoto {
+                avatarView.image = otherUserPhoto
+            } else {
+                setAvatar(for: otherUserEmail, to: avatarView) { [weak self] in self?.otherUserPhoto = avatarView.image }
+            }
+        }
+    }
+
+    func setAvatar(for email: String?, to view: UIImageView, completion: @escaping () -> Void) {
+        guard let email else { return }
+        let path = DatabaseManager.getProfilePicturePath(email: email)
+        StorageManager.shared.downloadURL(for: path, completion: { result in
+            switch result {
+            case.success(let urlString):
+                guard let url = URL(string: urlString) else { return }
+                URLSession.shared.dataTask(with: url, completionHandler: { data, _, error in
+                    guard let data, error == nil else { return }
+                    let image = UIImage(data: data)
+                    DispatchQueue.main.async {
+                        view.image = image
+                        completion()
+                    }
+                }).resume()
+            case .failure(let error):
+                print(error)
+            }
+        })
     }
 }
 

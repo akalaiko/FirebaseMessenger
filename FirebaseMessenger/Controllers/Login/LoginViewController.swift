@@ -273,13 +273,13 @@ extension LoginViewController: LoginButtonDelegate {
             let credential = FacebookAuthProvider.credential(withAccessToken: token)
             
             FirebaseAuth.Auth.auth().signIn(with: credential) { [weak self] authResult, error in
-                guard let self, let result = authResult, error == nil else { return }
+                guard let result = authResult, error == nil else { return }
                 
                 let user = result.user
                 
                 print("great success", user)
                 NotificationCenter.default.post(Notification(name: .didLogInNotification))
-                self.navigationController?.popToRootViewController(animated: true)
+                self?.navigationController?.popToRootViewController(animated: true)
             }
         }
     }
