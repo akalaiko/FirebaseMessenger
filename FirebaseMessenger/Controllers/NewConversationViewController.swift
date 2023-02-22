@@ -8,7 +8,7 @@
 import UIKit
 import JGProgressHUD
 
-class NewConversationViewController: UIViewController {
+final class NewConversationViewController: UIViewController {
     
     public var completion: ((SearchResult) ->(Void))?
     private let spinner = JGProgressHUD(style: .dark)
@@ -155,9 +155,4 @@ extension NewConversationViewController: UITableViewDataSource, UITableViewDeleg
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         70
     }
-}
-
-struct SearchResult {
-    let name: String
-    let email: String
 }

@@ -13,24 +13,6 @@ import AVFoundation
 import AVKit
 import CoreLocation
 
-struct Sender: SenderType {
-    var senderId: String
-    var displayName: String
-    var photoURL: String
-}
-
-struct Media: MediaItem {
-    var url: URL?
-    var image: UIImage?
-    var placeholderImage: UIImage
-    var size: CGSize
-}
-
-struct Location: LocationItem {
-    var location: CLLocation
-    var size: CGSize
-}
-
 class ChatViewController: MessagesViewController {
     
     public static let dateFormatter: DateFormatter = {
@@ -40,17 +22,13 @@ class ChatViewController: MessagesViewController {
         formatter.locale = Locale(identifier: "en_US")
         return formatter
     }()
+    public var isNewConversation = false
+    public let otherUserEmail: String
     
     private var currentUserPhoto: UIImage?
     private var otherUserPhoto: UIImage?
-    
-    
-    public var isNewConversation = false
-    public let otherUserEmail: String
     private var conversationId: String?
-    
     private var messages = [Message]()
-    
     private let currentUserEmail = UserDefaults.standard.value(forKey: "email") as? String
     
     private var selfSender: Sender? {
@@ -72,7 +50,6 @@ class ChatViewController: MessagesViewController {
         }
     }
     
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -93,7 +70,6 @@ class ChatViewController: MessagesViewController {
         super.viewDidAppear(animated)
         messageInputBar.inputTextView.becomeFirstResponder()
     }
-    
     
     private func setupInputButton() {
         let button = InputBarButtonItem()
@@ -118,7 +94,6 @@ class ChatViewController: MessagesViewController {
             self?.presentLocationPicker()
         })
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
         present(actionSheet, animated: true)
     }
     
@@ -174,9 +149,7 @@ class ChatViewController: MessagesViewController {
         vc.completion = { [weak self] selectedCoordinates in
             let longtitude: Double = selectedCoordinates.longitude
             let latitude: Double = selectedCoordinates.latitude
-            
-            print(longtitude, latitude)
-            
+
             guard let messageId = self?.createMessageId(),
                   let conversationId = self?.conversationId,
                   let name = self?.title,
@@ -188,13 +161,7 @@ class ChatViewController: MessagesViewController {
             let locationItem = Location(location: CLLocation(latitude: latitude, longitude: longtitude), size: .zero)
             let message = Message(sender: selfSender, messageId: messageId, sentDate: Date(), kind: .location(locationItem))
             
-            DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: otherUserEmail, name: name, message: message) { success in
-                if success {
-                    print("sent")
-                } else {
-                    print("failed to send a message in existing convo")
-                }
-            }
+            DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: otherUserEmail, name: name, message: message) { _ in }
         }
         let nav = UINavigationController(rootViewController: vc)
         nav.modalPresentationStyle = .popover
@@ -202,13 +169,10 @@ class ChatViewController: MessagesViewController {
     }
     
     private func createMessageId() -> String? {
-        // date, otherUserEmail, senderEmail
         guard let currentUserEmail else { return nil }
         let safeEmail = DatabaseManager.safeEmail(email: currentUserEmail)
-        
         let dateString = Self.dateFormatter.string(from: Date())
         let newId = otherUserEmail + safeEmail + dateString
-        
         return newId
     }
     
@@ -216,8 +180,7 @@ class ChatViewController: MessagesViewController {
         DatabaseManager.shared.getAllMessagesForConversation(with: id, completion: { [weak self] result in
             switch result {
             case .success(let messages):
-                guard !messages.isEmpty else {
-                    return }
+                guard !messages.isEmpty else { return }
                 self?.messages = messages
                 DispatchQueue.main.async {
                     self?.messagesCollectionView.reloadDataAndKeepOffset()
@@ -237,13 +200,11 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
         guard !text.replacingOccurrences(of: " ", with: "").isEmpty,
               let selfSender,
               let messageId = createMessageId() else { return }
-        print("are we even here?")
         let message = Message(sender: selfSender, messageId: messageId, sentDate: Date(), kind: .text(text))
         
         if isNewConversation {
             DatabaseManager.shared.createNewConversation(with: otherUserEmail, name: title ?? "User", firstMessage: message, completion: { [weak self] success in
                 if success {
-                    print("sent")
                     self?.isNewConversation = false
                     let newConversationId = "conversation_\(message.messageId)"
                     self?.conversationId = newConversationId
@@ -257,7 +218,6 @@ extension ChatViewController: InputBarAccessoryViewDelegate {
             guard let conversationId else { return }
             DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: otherUserEmail, name: title ?? "User", message: message, completion: { [weak self] success in
                 if success {
-                    print("sent")
                     self?.messageInputBar.inputTextView.text = nil
                 } else {
                     print("failed to send a message in existing convo")
@@ -297,12 +257,10 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
         switch message.kind {
         case .photo(let media):
             guard let imageUrl = media.url else { return }
-            
             let vc = PhotoViewerViewController(with: imageUrl)
             navigationController?.pushViewController(vc, animated: true)
         case .video(let media):
             guard let videoUrl = media.url else { return }
-            
             let vc = AVPlayerViewController()
             vc.player = AVPlayer(url: videoUrl)
             vc.player?.play()
@@ -318,7 +276,6 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
         case .location(let locationData):
             let coordinates = locationData.location.coordinate
             let vc = LocationPickerViewController(coordinates: coordinates)
-            
             let nav = UINavigationController(rootViewController: vc)
             nav.modalPresentationStyle = .popover
             present(nav, animated: true)
@@ -336,7 +293,6 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
     
     func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
         let sender = message.sender
-        
         if sender.senderId == selfSender?.senderId {
             if let currentUserPhoto {
                 avatarView.image = currentUserPhoto
@@ -399,24 +355,17 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
                 
                 switch result {
                 case .success(let urlString):
-                    print("uploaded message photo:", urlString)
                     let url = URL(string: urlString)
                     let media = Media(url: url, placeholderImage: placeholder, size: .zero)
                     let message = Message(sender: selfSender, messageId: messageId, sentDate: Date(), kind: .photo(media))
-                    
-                    DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: self.otherUserEmail, name: name, message: message) { success in
-                        if success {
-                            print("sent")
-                        } else {
-                            print("failed to send a message in existing convo")
-                        }
-                    }
+                    DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: self.otherUserEmail, name: name, message: message) { _ in }
                 case .failure(let error):
                     print(error)
                 }
             })
             
         } else if let videoUrl = info[.mediaURL] as? URL {
+            
             let filename = "video_message_" + messageId.replacingOccurrences(of: " ", with: "-") + ".mov"
             
             StorageManager.shared.uploadMessageVideo(with: videoUrl, fileName: filename, completion: { [weak self] result in
@@ -428,19 +377,11 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
                     let url = URL(string: urlString)
                     let media = Media(url: url, placeholderImage: placeholder, size: .zero)
                     let message = Message(sender: selfSender, messageId: messageId, sentDate: Date(), kind: .video(media))
-                    
-                    DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: self.otherUserEmail, name: name, message: message) { success in
-                        if success {
-                            print("sent")
-                        } else {
-                            print("failed to send a message in existing convo")
-                        }
-                    }
+                    DatabaseManager.shared.sendMessage(to: conversationId, otherUserEmail: self.otherUserEmail, name: name, message: message) { _ in }
                 case .failure(let error):
                     print(error)
                 }
             })
-            
         }
     }
 }

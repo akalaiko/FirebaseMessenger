@@ -11,9 +11,9 @@ import FacebookLogin
 
 class ProfileViewViewController: UIViewController {
     
-    var tableView: UITableView!
-    var data = ["name", "email", "Log out"]
-    var cachedAvatar: UIImage?
+    private var tableView: UITableView!
+    private var data = ["Log out"]
+    private var cachedAvatar: UIImage?
     
     override func loadView() {
         tableView = UITableView()
@@ -25,8 +25,6 @@ class ProfileViewViewController: UIViewController {
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        data[0] = UserDefaults.standard.value(forKey: "name") as? String ?? ""
-        data[1] = UserDefaults.standard.value(forKey: "email") as? String ?? ""
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -35,7 +33,7 @@ class ProfileViewViewController: UIViewController {
         tableView.tableHeaderView = createTableHeader()
     }
     
-    func createTableHeader() -> UIView? {
+    private func createTableHeader() -> UIView? {
         guard let email = UserDefaults.standard.value(forKey: "email") as? String else { return nil }
         let path = DatabaseManager.getProfilePicturePath(email: email)
         
@@ -43,7 +41,6 @@ class ProfileViewViewController: UIViewController {
         headerView.backgroundColor = .systemBackground
         
         let imageView = UIImageView(frame: CGRect(x: 136.5, y: 15, width: 120, height: 120))
-        
         imageView.contentMode = .scaleAspectFill
         imageView.backgroundColor = .white
         imageView.layer.borderColor = UIColor.white.cgColor
@@ -64,12 +61,10 @@ class ProfileViewViewController: UIViewController {
                 }
             })
         }
-        
-        
         return headerView
     }
     
-    func downloadImage(imageView: UIImageView, urlString: String, completion: @escaping () -> Void) {
+    private func downloadImage(imageView: UIImageView, urlString: String, completion: @escaping () -> Void) {
         guard let url = URL(string: urlString) else { return }
         URLSession.shared.dataTask(with: url, completionHandler: { data, _, error in
             guard let data, error == nil else { return }
@@ -92,27 +87,12 @@ extension ProfileViewViewController: UITableViewDelegate, UITableViewDataSource 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.textAlignment = .center
-        cell.selectionStyle = .none
-        
-        if indexPath.row == 0 {
-            cell.textLabel?.text = data[indexPath.row].uppercased()
-            cell.textLabel?.font = .systemFont(ofSize: 20, weight: .bold)
-        }
-        
-        if indexPath.row == 1 {
-            cell.textLabel?.text = data[indexPath.row]
-        }
-        
-        if indexPath.row == 2 {
-            cell.textLabel?.text = data[indexPath.row].uppercased()
-            cell.textLabel?.textColor = .red
-            cell.selectionStyle = .default
-        }
+        cell.textLabel?.text = data[indexPath.row]
+        cell.textLabel?.textColor = .red
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard indexPath.row == data.count - 1 else { return }
         tableView.deselectRow(at: indexPath, animated: true)
         
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
@@ -126,7 +106,6 @@ extension ProfileViewViewController: UITableViewDelegate, UITableViewDataSource 
             
             do {
                 try FirebaseAuth.Auth.auth().signOut()
-                
                 let vc = LoginViewController()
                 self?.navigationController?.pushViewController(vc, animated: false)
             } catch {
@@ -135,8 +114,5 @@ extension ProfileViewViewController: UITableViewDelegate, UITableViewDataSource 
         })
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         present(actionSheet, animated: true)
-        
     }
-    
-    
 }

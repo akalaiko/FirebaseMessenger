@@ -49,7 +49,6 @@ final class LocationPickerViewController: UIViewController {
             locationManager.distanceFilter = kCLDistanceFilterNone
             locationManager.startUpdatingLocation()
             map.showsUserLocation = true
-            
         } else {
             title = "Location"
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Close", style: .done, target: self, action: #selector(dismissSelf))
@@ -60,7 +59,6 @@ final class LocationPickerViewController: UIViewController {
                 map.camera = MKMapCamera(lookingAtCenter: coordinates, fromEyeCoordinate: coordinates, eyeAltitude: 2000)
             }
         }
-        
     }
     
     override func viewDidLayoutSubviews() {
@@ -79,7 +77,6 @@ final class LocationPickerViewController: UIViewController {
         let locationInView = gesture.location(in: map)
         coordinates = map.convert(locationInView, toCoordinateFrom: map)
         guard let coordinates else { return }
-        // drop pin
         map.removeAnnotations(map.annotations)
         let pin = MKPointAnnotation()
         pin.coordinate = coordinates

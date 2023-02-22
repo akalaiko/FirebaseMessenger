@@ -9,26 +9,7 @@ import UIKit
 import FirebaseAuth
 import JGProgressHUD
 
-struct Conversation {
-    let id: String
-    let name: String
-    let otherUserEmail: String
-    let latestMessage: LatestMessage
-}
-
-extension Conversation: Equatable {
-    static func == (lhs: Conversation, rhs: Conversation) -> Bool {
-        lhs.id == rhs.id
-    }
-}
-
-struct LatestMessage {
-    let date: String
-    let text: String
-    let isRead: Bool
-}
-
-class ConversationsViewController: UIViewController {
+final class ConversationsViewController: UIViewController {
     
     private let spinner = JGProgressHUD(style: .dark)
     
@@ -81,15 +62,15 @@ class ConversationsViewController: UIViewController {
        
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        tabBarController?.tabBar.isHidden = false
-    }
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
         noConversationsLabel.frame = CGRect(x: 10, y: (view.height-50)/2, width: view.width - 20, height: 50)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
     }
     
     private func startListeningForConversations() {
@@ -101,12 +82,10 @@ class ConversationsViewController: UIViewController {
         
         let safeEmail = DatabaseManager.safeEmail(email: email)
         DatabaseManager.shared.getAllConversations(for: safeEmail, completion: { [weak self] result in
-            print("should get convos here", result)
             switch result {
             case .success(let fetchedConversations):
                 guard !fetchedConversations.isEmpty else { return }
                 self?.conversations = fetchedConversations
-                
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
                 }
@@ -116,7 +95,7 @@ class ConversationsViewController: UIViewController {
         })
     }
 
-    @objc func didTapComposeButton() {
+    @objc private func didTapComposeButton() {
         let vc = NewConversationViewController()
         vc.completion = { [weak self] user in
             if let targetConversation = self?.conversations.first(where: {$0.otherUserEmail == user.email}) {
