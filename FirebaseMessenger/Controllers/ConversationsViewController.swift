@@ -81,6 +81,11 @@ class ConversationsViewController: UIViewController {
        
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
+    }
+    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
@@ -100,9 +105,7 @@ class ConversationsViewController: UIViewController {
             switch result {
             case .success(let fetchedConversations):
                 guard !fetchedConversations.isEmpty else { return }
-                if self?.conversations != fetchedConversations {
-                    self?.conversations = fetchedConversations
-                }
+                self?.conversations = fetchedConversations
                 
                 DispatchQueue.main.async {
                     self?.tableView.reloadData()
@@ -112,12 +115,7 @@ class ConversationsViewController: UIViewController {
             }
         })
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        tabBarController?.tabBar.isHidden = false
-    }
-    
+
     @objc func didTapComposeButton() {
         let vc = NewConversationViewController()
         vc.completion = { [weak self] user in
@@ -160,6 +158,13 @@ class ConversationsViewController: UIViewController {
             navigationController?.pushViewController(vc, animated: false)
         }
     }
+    
+    private func openConversation(_ model: Conversation) {
+        let vc = ChatViewController(with: model.otherUserEmail, id: model.id)
+        vc.title = model.name
+        vc.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(vc, animated: true)
+    }
 }
 
 extension ConversationsViewController: UITableViewDelegate, UITableViewDataSource {
@@ -182,13 +187,6 @@ extension ConversationsViewController: UITableViewDelegate, UITableViewDataSourc
         tableView.deselectRow(at: indexPath, animated: true)
         let model = conversations[indexPath.row]
         openConversation(model)
-    }
-    
-    func openConversation(_ model: Conversation) {
-        let vc = ChatViewController(with: model.otherUserEmail, id: model.id)
-        vc.title = model.name
-        vc.navigationItem.largeTitleDisplayMode = .never
-        navigationController?.pushViewController(vc, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

@@ -13,40 +13,6 @@ import AVFoundation
 import AVKit
 import CoreLocation
 
-struct Message: MessageType{
-    var sender: SenderType
-    var messageId: String
-    var sentDate: Date
-    var kind: MessageKind
-}
-
-extension MessageKind {
-    var description: String {
-        switch self {
-        case .text(_):
-            return "text"
-        case .attributedText(_):
-            return "attributed_text"
-        case .photo(_):
-            return "photo"
-        case .video(_):
-            return "video"
-        case .location(_):
-            return "location"
-        case .emoji(_):
-            return "emoji"
-        case .audio(_):
-            return "audio"
-        case .contact(_):
-            return "contact"
-        case .linkPreview(_):
-            return "link_preview"
-        case .custom(_):
-            return "custom"
-        }
-    }
-}
-
 struct Sender: SenderType {
     var senderId: String
     var displayName: String
@@ -147,9 +113,6 @@ class ChatViewController: MessagesViewController {
         })
         actionSheet.addAction(UIAlertAction(title: "Video", style: .default){ [weak self] _ in
             self?.presentVideoInputActionSheet()
-        })
-        actionSheet.addAction(UIAlertAction(title: "Audio", style: .default){ [weak self] _ in
-            
         })
         actionSheet.addAction(UIAlertAction(title: "Location", style: .default){ [weak self] _ in
             self?.presentLocationPicker()

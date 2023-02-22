@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AF47802E29A67A7E004CB745 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF47802D29A67A7E004CB745 /* Message.swift */; };
+		AF47803029A6A5BF004CB745 /* ChatAppUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF47802F29A6A5BF004CB745 /* ChatAppUser.swift */; };
 		AF7AAF4529645CC2001DF0CD /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF7AAF4429645CC2001DF0CD /* DatabaseManager.swift */; };
 		AF7AAF4929646409001DF0CD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AF7AAF4829646409001DF0CD /* GoogleService-Info.plist */; };
 		AF7AAFB1297941F5001DF0CD /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF7AAFB0297941F5001DF0CD /* TabBar.swift */; };
@@ -41,6 +43,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AF47802D29A67A7E004CB745 /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		AF47802F29A6A5BF004CB745 /* ChatAppUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatAppUser.swift; sourceTree = "<group>"; };
 		AF7AAF4429645CC2001DF0CD /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		AF7AAF4829646409001DF0CD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		AF7AAFB0297941F5001DF0CD /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
@@ -122,6 +126,8 @@
 		AFB9028E295C2F73008DADC6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				AF47802D29A67A7E004CB745 /* Message.swift */,
+				AF47802F29A6A5BF004CB745 /* ChatAppUser.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -296,9 +302,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF47803029A6A5BF004CB745 /* ChatAppUser.swift in Sources */,
 				AFB90294295C3069008DADC6 /* LoginViewController.swift in Sources */,
 				AF7AAF4529645CC2001DF0CD /* DatabaseManager.swift in Sources */,
 				AFB90296295C3074008DADC6 /* RegisterViewController.swift in Sources */,
+				AF47802E29A67A7E004CB745 /* Message.swift in Sources */,
 				AFE5288129A0D27800F2D798 /* LocationPickerViewController.swift in Sources */,
 				AFC6E8A429815091004F38E4 /* StorageManager.swift in Sources */,
 				AF7AAFB1297941F5001DF0CD /* TabBar.swift in Sources */,
