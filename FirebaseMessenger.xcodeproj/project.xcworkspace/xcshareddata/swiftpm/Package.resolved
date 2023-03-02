@@ -91,15 +91,6 @@
       }
     },
     {
-      "identity" : "jgprogresshud",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/JonasGessner/JGProgressHUD",
-      "state" : {
-        "revision" : "78d7cd35f1d90ff74fd82e486f2cbe4b24be8cf9",
-        "version" : "2.2.0"
-      }
-    },
-    {
       "identity" : "leveldb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/leveldb.git",
@@ -133,24 +124,6 @@
       "state" : {
         "revision" : "3e4e743631e86c8c70dbc6efdc7beaa6e90fd3bb",
         "version" : "2.1.1"
-      }
-    },
-    {
-      "identity" : "realm-core",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/realm/realm-core.git",
-      "state" : {
-        "revision" : "b77443ca7fa25407869ca537bf3ae912b1427bff",
-        "version" : "12.13.0"
-      }
-    },
-    {
-      "identity" : "realm-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/realm/realm-swift.git",
-      "state" : {
-        "branch" : "master",
-        "revision" : "5d6abe657bfe628e426442aa8143c1ec392706a2"
       }
     },
     {

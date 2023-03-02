@@ -5,14 +5,14 @@
 //  Created by Tim on 31.01.2023.
 //
 
-import UIKit
 import SDWebImage
+import UIKit
 
-class ConversationTableViewCell: UITableViewCell {
+final class ConversationTableViewCell: UITableViewCell {
     
     static let identifier = "ConversationTableViewCell"
     
-    private let userImageView: UIImageView = {
+    public let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 35
@@ -49,30 +49,17 @@ class ConversationTableViewCell: UITableViewCell {
         userImageView.frame = CGRect(x: 15, y: 15, width: 70, height: 70)
         userNameLabel.frame = CGRect(x: userImageView.right + 15,
                                      y: 15,
-                                     width: contentView.width - 30 - userImageView.width,
+                                     width: contentView.width - 50 - userImageView.width,
                                      height: contentView.height/2 - 15)
         userMessageLabel.frame = CGRect(x: userImageView.right + 15,
                                         y: userNameLabel.bottom,
-                                        width: contentView.width - 30 - userImageView.width,
+                                        width: contentView.width - 50 - userImageView.width,
                                         height: contentView.height/2 - 15)
     }
     
     public func configure(with model: Conversation) {
         userMessageLabel.text = model.latestMessage.text
         userNameLabel.text = model.name
-        
-        let path = DatabaseManager.getProfilePicturePath(email: model.otherUserEmail)
-        StorageManager.shared.downloadURL(for: path, completion: { [weak self] result in
-            switch result {
-            case .success(let urlString):
-                let url = URL(string: urlString)
-                DispatchQueue.main.async {
-                    self?.userImageView.sd_setImage(with: url)
-                }
-            case .failure(let error):
-                print(error)
-            }
-        })
     }
     
 }

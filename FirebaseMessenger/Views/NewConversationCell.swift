@@ -8,11 +8,11 @@
 import Foundation
 import SDWebImage
 
-class NewConversationCell: UITableViewCell {
+final class NewConversationCell: UITableViewCell {
     
     static let identifier = "NewConversationCell"
     
-    private let userImageView: UIImageView = {
+    public let userImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 25
@@ -47,19 +47,6 @@ class NewConversationCell: UITableViewCell {
     
     public func configure(with model: SearchResult) {
         userNameLabel.text = model.name
-        
-        let path = DatabaseManager.getProfilePicturePath(email: model.email)
-        StorageManager.shared.downloadURL(for: path, completion: { [weak self] result in
-            switch result {
-            case .success(let urlString):
-                let url = URL(string: urlString)
-                DispatchQueue.main.async {
-                    self?.userImageView.sd_setImage(with: url)
-                }
-            case .failure(let error):
-                print(error)
-            }
-        })
     }
     
 }
