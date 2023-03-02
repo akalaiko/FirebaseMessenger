@@ -11,7 +11,7 @@ import UIKit
 
 final class ConversationsViewController: UIViewController {
 
-    private var conversations = [Conversation]() {
+    private lazy var conversations = [Conversation]() {
         didSet {
             noConversationsLabel.isHidden = !conversations.isEmpty
             tableView.isHidden = conversations.isEmpty
@@ -146,14 +146,17 @@ final class ConversationsViewController: UIViewController {
     @objc private func logOutTapped() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.addAction(UIAlertAction(title: "Log out", style: .destructive) { [weak self] _ in
-            UserDefaults.standard.set(nil, forKey: "email")
-            UserDefaults.standard.set(nil, forKey: "name")
             
             FacebookLogin.LoginManager().logOut()
-            
             do {
                 try FirebaseAuth.Auth.auth().signOut()
                 let vc = LoginViewController()
+                UserDefaults.standard.set(nil, forKey: "email")
+                UserDefaults.standard.set(nil, forKey: "name")
+                self?.conversations = []
+                self?.loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main) { _ in
+                    self?.startListeningForConversations()
+                }
                 self?.navigationController?.pushViewController(vc, animated: true)
             } catch {
                 print ("failed")

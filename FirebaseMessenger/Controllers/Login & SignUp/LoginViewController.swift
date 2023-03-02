@@ -92,7 +92,6 @@ final class LoginViewController: UIViewController {
         passwordField.delegate = self
         facebookLoginButton.delegate = self
         
-        navigationController?.navigationBar.isHidden = true
         loginButton.addTarget(self, action: #selector(loginTapped), for: .touchUpInside)
         registrationButton.addTarget(self, action: #selector(registerTapped), for: .touchUpInside)
         
@@ -124,6 +123,10 @@ final class LoginViewController: UIViewController {
         registrationButton.frame = CGRect(x: largePadding, y: facebookLoginButton.bottom + smallPadding, width: width, height: height)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = true
+    }
+    
     @objc private func registerTapped() {
         let vc = RegisterViewController()
         navigationController?.pushViewController(vc, animated: true)
@@ -147,6 +150,8 @@ final class LoginViewController: UIViewController {
             guard error == nil else { return print("failed to login in user with email: \(email)") }
             let safeEmail = DatabaseManager.safeEmail(email: email)
             
+            UserDefaults.standard.set(email, forKey: "email")
+            NotificationCenter.default.post(Notification(name: .didLogInNotification))
             DatabaseManager.shared.getDataFor(path: "users/\(safeEmail)", completion: { result in
                 switch result {
                 case .success(let data):
@@ -156,12 +161,10 @@ final class LoginViewController: UIViewController {
                         return
                     }
                     UserDefaults.standard.set(name, forKey: "name")
-                    UserDefaults.standard.set(email, forKey: "email")
-                    NotificationCenter.default.post(Notification(name: .didLogInNotification))
-                    self?.navigationController?.popToRootViewController(animated: true)
                 case .failure(let error):
                     print("failed to read data with error:", error)
                 }
+                self?.navigationController?.popToRootViewController(animated: true)
             })
         }
     }

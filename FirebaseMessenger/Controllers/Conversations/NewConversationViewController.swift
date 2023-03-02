@@ -12,10 +12,10 @@ final class NewConversationViewController: UIViewController {
     
     public var completion: ((SearchResult) ->(Void))?
     
-    private let currentUserEmail = UserDefaults.standard.value(forKey: "email") as? String
-    private var users = [[String: Any]]()
-    private var hasFetched = false
-    private var results = [SearchResult]()
+    private lazy var currentUserEmail = UserDefaults.standard.value(forKey: "email") as? String
+    private lazy var users = [[String: Any]]()
+    private lazy var hasFetched = false
+    private lazy var results = [SearchResult]()
     
     private let searchBar: UISearchBar = {
         let searchBar = UISearchBar()

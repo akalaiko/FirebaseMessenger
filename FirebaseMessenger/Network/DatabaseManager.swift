@@ -15,6 +15,14 @@ final class DatabaseManager {
     static let shared = DatabaseManager()
     private init() {}
     
+    static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .long
+        formatter.locale = Locale(identifier: "en_US")
+        return formatter
+    }()
+    
     static func safeEmail(email: String?) -> String  {
         guard let email else { return "" }
         var safeEmail = email.replacingOccurrences(of: ".", with: "-")
@@ -29,8 +37,8 @@ final class DatabaseManager {
     private enum DatabaseError: Error {
         case failed
     }
-    private let database = Database.database().reference()
-    private let senderEmail = UserDefaults.standard.value(forKey: "email") as? String
+    private lazy var database = Database.database().reference()
+    private lazy var senderEmail = UserDefaults.standard.value(forKey: "email") as? String
     
     typealias completionBlockForString = (Result<String, Error>) -> Void
     
@@ -89,7 +97,7 @@ extension DatabaseManager {
                       let content = dictionary["content"] as? String,
                       let dateString = dictionary["date"] as? String,
                       let kind = dictionary["kind"] as? String,
-                      let date = ChatViewController.dateFormatter.date(from: dateString)
+                      let date = DatabaseManager.dateFormatter.date(from: dateString)
                 else {
                     return nil
                 }
@@ -131,7 +139,7 @@ extension DatabaseManager {
         guard let currentName = UserDefaults.standard.value(forKey: "name") as? String else { return }
         let safeEmail = DatabaseManager.safeEmail(email: senderEmail)
         var content = ""
-        let messageDateString = ChatViewController.dateFormatter.string(from: message.sentDate)
+        let messageDateString = DatabaseManager.dateFormatter.string(from: message.sentDate)
         
         switch message.kind {
             

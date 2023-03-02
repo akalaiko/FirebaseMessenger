@@ -148,7 +148,7 @@ final class RegisterViewController: UIViewController {
         let smallPadding: CGFloat = 10
         let largePadding: CGFloat = 40
         
-        imageView.frame = CGRect(x: imageSize, y: largePadding, width: imageSize, height: imageSize)
+        imageView.frame = CGRect(x: imageSize, y: smallPadding, width: imageSize, height: imageSize)
         imageView.layer.cornerRadius = imageView.width / 2
         firstNameField.frame = CGRect(x: largePadding, y: imageView.bottom + largePadding, width: width, height: height)
         lastNameField.frame = CGRect(x: largePadding, y: firstNameField.bottom + smallPadding, width: width, height: height)
@@ -156,6 +156,10 @@ final class RegisterViewController: UIViewController {
         passwordField.frame = CGRect(x: largePadding, y: emailField.bottom + smallPadding, width: width, height: height)
         repeatPasswordField.frame = CGRect(x: largePadding, y: passwordField.bottom + smallPadding, width: width, height: height)
         registerButton.frame = CGRect(x: largePadding, y: repeatPasswordField.bottom + largePadding, width: width, height: height)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.isHidden = false
     }
     
     @objc private func didTapChangeProfilePic() {

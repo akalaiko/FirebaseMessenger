@@ -16,22 +16,15 @@ import UIKit
 
 final class ChatViewController: MessagesViewController {
     
-    public static let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .long
-        formatter.locale = Locale(identifier: "en_US")
-        return formatter
-    }()
     public var isNewConversation = false
     public let otherUserEmail: String
     
     private var currentUserPhoto: UIImage?
     private var otherUserPhoto: UIImage?
     private var conversationId: String?
-    private var messages = [Message]()
-    private let currentUserEmail = UserDefaults.standard.value(forKey: "email") as? String
-    private let currentUserName = UserDefaults.standard.value(forKey: "name") as? String
+    private lazy var messages = [Message]()
+    private lazy var currentUserEmail = UserDefaults.standard.value(forKey: "email") as? String
+    private lazy var currentUserName = UserDefaults.standard.value(forKey: "name") as? String
     private var selfSender: Sender? {
         guard let currentUserEmail, let currentUserName else { return nil }
         let safeEmail = DatabaseManager.safeEmail(email: currentUserEmail)
@@ -141,7 +134,7 @@ final class ChatViewController: MessagesViewController {
     private func createMessageId() -> String? {
         guard let currentUserEmail else { return nil }
         let safeEmail = DatabaseManager.safeEmail(email: currentUserEmail)
-        let dateString = Self.dateFormatter.string(from: Date())
+        let dateString = DatabaseManager.dateFormatter.string(from: Date())
         let newId = otherUserEmail + safeEmail + dateString
         return newId
     }
